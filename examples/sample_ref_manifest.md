@@ -14,6 +14,7 @@
   - year: 2021 | first_author: Kohn
   - doi: 10.3389/fpsyg.2021.604977 | resolved_doi: 10.3389/fpsyg.2021.604977
   - article_url: https://doi.org/10.3389/fpsyg.2021.604977
+  - pdf_url_hint: https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2021.604977/pdf
   - oa_pdf_hint: https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2021.604977/pdf
   - needs_login_maybe: False
   - download_status: pending

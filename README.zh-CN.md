@@ -11,11 +11,27 @@
 - 提取作者、年份、标题、DOI
 - 补充 Crossref / OpenAlex 元数据线索
 - 给出可以直接打开文献网页的 `article_url`
+- 给出偏向 PDF 入口的 `pdf_url_hint`
 - 输出 `ref_manifest.json`
 - 输出 `ref_manifest.md`
 - 输出 `ref_manifest.csv`
 - 做重复文献提示
 - 可选地对比本地 PDF 文件夹
+
+---
+
+## `article_url` 和 `pdf_url_hint` 的区别
+
+这是现在这个 skill 里最重要的两个 URL 字段：
+
+- `article_url`：优先给你**文章网页 / DOI 页面 / landing page**
+- `pdf_url_hint`：优先给你**更像 PDF 入口的链接线索**
+
+简单说：
+- `article_url` 适合先点开看文献网页
+- `pdf_url_hint` 适合继续找 PDF 或直接尝试下载
+
+如果后面你是手动下载文献，这两个字段会非常顺手。
 
 ---
 
@@ -49,26 +65,16 @@
 并补充：
 - `resolved_doi`
 - `article_url`
+- `pdf_url_hint`
 - `oa_pdf_hint`
 - `needs_login_maybe`
 
-### 4. URL 可以直接打开文献网页
-这是这个 skill 很关键的一点。
-
-输出里的：
-- `article_url`
-- `crossref.url`
-
-通常都可以直接作为**文献落地页 / DOI 页面 / 文章网页入口**来打开。
-
-也就是说，这个 skill 不只是帮你“抽元数据”，它还会尽量把**能点开的文章网页入口**给你整理出来，方便后续手动下载。
-
-### 5. 自动提示重复文献
+### 4. 自动提示重复文献
 输出：
 - `duplicate_group`
 - `duplicate_reason`
 
-### 6. 支持本地 PDF 比对
+### 5. 支持本地 PDF 比对
 如果传入 `--local-pdf-dir`，会尝试根据：
 - DOI
 - 标题 token
@@ -80,59 +86,10 @@
 - `local_pdf`
 - `local_match_reason`
 
-### 7. 同时输出三种文件
+### 6. 同时输出三种文件
 - `ref_manifest.json`：适合脚本处理
 - `ref_manifest.md`：适合人工审查
 - `ref_manifest.csv`：适合 Excel / Sheets 手动筛选和下载管理
-
----
-
-## 如何使用
-
-### 基本用法
-
-```bash
-python scripts/extract_ref_manifest.py references.md --out-dir ./out
-```
-
-### 加本地 PDF 比对
-
-```bash
-python scripts/extract_ref_manifest.py references.md --out-dir ./out --local-pdf-dir ./papers
-```
-
-### 只测试单条引用解析
-
-```bash
-python scripts/normalize_reference.py "Lee, J. D., & See, K. A. (2004). Trust in automation: Designing for appropriate reliance. Human Factors, 46(1), 50-80."
-```
-
----
-
-## 输出说明
-
-### `ref_manifest.json`
-机器友好版本，适合后续脚本继续处理。
-
-### `ref_manifest.md`
-人工友好版本，适合快速浏览和核对。
-
-### `ref_manifest.csv`
-表格版本，适合：
-- Excel 打开
-- 手动标记已下载/未下载
-- 排序筛选
-- 后续下载管理
-
-### `article_url`
-这是新增强调的关键字段。
-
-它通常可以直接打开：
-- DOI 页面
-- 文章 landing page
-- 文献网页入口
-
-如果你后面要手动下载文献，这个字段会非常省事。
 
 ---
 
@@ -142,21 +99,9 @@ python scripts/normalize_reference.py "Lee, J. D., & See, K. A. (2004). Trust in
 
 1. 你已经有一份参考文献列表
 2. 你想先得到一个干净、结构化、可筛选的工作清单
-3. 你还希望顺手得到可打开的文献网页入口
+3. 你还希望顺手得到可打开的文献网页入口和 PDF 提示链接
 4. 然后再手动下载、归档或补全
 
 说白了，它是一个：
 
 **下载前整理器 / 文献清单生成器 / 网页入口整理器**
-
----
-
-## 还需要改进的地方
-
-目前还有这些可以继续优化：
-
-1. 对更多引用格式的兼容性可以更强
-2. 中英文混排、日文混排参考文献的解析仍可继续加强
-3. 本地 PDF 比对目前主要依赖文件名启发式，后续可加入更稳的元数据校验
-4. 重复检测目前偏保守，后续可以加近似标题匹配
-5. `article_url` 目前优先取 Crossref / OpenAlex / DOI，可继续提升排序策略

@@ -9,6 +9,7 @@
 - 著者 / 年 / タイトル / DOI の抽出
 - Crossref / OpenAlex によるメタデータ補強
 - 文献ページを直接開ける `article_url` の出力
+- PDF に近い入口を示す `pdf_url_hint` の出力
 - `ref_manifest.json` の生成
 - `ref_manifest.md` の生成
 - `ref_manifest.csv` の生成

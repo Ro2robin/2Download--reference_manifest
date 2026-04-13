@@ -19,7 +19,8 @@ It can:
 - parse references
 - extract author / year / title / DOI
 - enrich entries with Crossref / OpenAlex hints
-- expose `article_url` that can directly open the paper landing page
+- expose `article_url` for the paper landing page
+- expose `pdf_url_hint` for a likely PDF entry point
 - generate `ref_manifest.json`
 - generate `ref_manifest.md`
 - generate `ref_manifest.csv`
@@ -28,20 +29,15 @@ It can:
 
 ![Workflow overview](assets/workflow-overview.png)
 
-## Why `article_url` matters
+## Why `article_url` and `pdf_url_hint` matter
 
-A manifest is much more useful when it contains not only metadata, but also a direct web entry point to the paper.
+A manifest becomes much more useful when it contains not only metadata, but also direct web entry points.
 
-This repository now emphasizes:
-- `article_url`
-- `crossref.url`
+This repository now distinguishes two URL-style outputs:
+- `article_url` — best-effort landing page / DOI / article webpage
+- `pdf_url_hint` — best-effort PDF-oriented hint, usually from open-access metadata
 
-These URLs can often be opened directly as:
-- DOI pages
-- article landing pages
-- journal/paper webpages
-
-That makes later manual downloading much easier.
+This makes later manual downloading much easier.
 
 ## Feature overview
 
@@ -53,7 +49,8 @@ That makes later manual downloading much easier.
 | Unnumbered one-line parsing | ✅ | Basic support |
 | Broken multi-line reference merge | ✅ | Merges before parsing |
 | DOI extraction | ✅ | Direct DOI + resolved DOI |
-| Article URL extraction | ✅ | `article_url` field added |
+| Article URL extraction | ✅ | `article_url` field |
+| PDF URL hint extraction | ✅ | `pdf_url_hint` field |
 | Crossref enrichment | ✅ | Best-effort |
 | OpenAlex enrichment | ✅ | Best-effort |
 | JSON output | ✅ | Main machine-readable manifest |
@@ -71,7 +68,7 @@ parse + normalize
         ↓
 Crossref / OpenAlex enrichment
         ↓
-article_url selection
+article_url / pdf_url_hint selection
         ↓
 duplicate detection
         ↓
@@ -104,6 +101,7 @@ python scripts/normalize_reference.py "Lee, J. D., & See, K. A. (2004). Trust in
 - `ref_manifest.md` — quick audit summary
 - `ref_manifest.csv` — easy manual review in Excel / Sheets
 - `article_url` — direct article webpage / landing-page hint where available
+- `pdf_url_hint` — best-effort PDF-oriented URL hint where available
 
 ![Sample output overview](assets/sample-output-overview.png)
 
@@ -138,19 +136,10 @@ python scripts/normalize_reference.py "Lee, J. D., & See, K. A. (2004). Trust in
 └── SKILL.md
 ```
 
-## Examples
-
-See `examples/` for:
-- minimal input references
-- sample JSON output
-- sample MD output
-- sample CSV output
-- a minimal run command
-
 ## Intended usage model
 
 This skill is best used as a **pre-download organizer**.
-You feed it a references section, and it gives you a manifest with metadata, duplicate hints, and article URLs that make later manual literature work much faster.
+You feed it a references section, and it gives you a manifest with metadata, duplicate hints, landing-page URLs, and PDF URL hints that make later manual literature work much faster.
 
 ## What still needs improvement
 
@@ -159,11 +148,7 @@ You feed it a references section, and it gives you a manifest with metadata, dup
 - smarter local PDF matching beyond filename heuristics
 - optional DOI-first verification mode
 - richer duplicate detection for near-duplicate titles
-- smarter ranking for `article_url` selection across Crossref / OpenAlex / DOI
-
-## Maintenance notes
-
-This repository should stay focused on reference parsing and manifest generation.
+- smarter ranking for `article_url` and `pdf_url_hint`
 
 ## License
 
