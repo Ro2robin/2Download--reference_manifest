@@ -1,11 +1,11 @@
 ---
 name: reference-manifest
-description: Extract structured metadata from scholarly reference lists and generate a clean literature manifest for manual downloading or later curation. Use when the task is to parse a references section, normalize citations, recover fields like title/year/author/DOI, enrich entries with Crossref or OpenAlex hints, detect likely duplicates, compare against an existing local PDF folder, and write `ref_manifest.json` / `ref_manifest.md` / `ref_manifest.csv`.
+description: Extract structured metadata from scholarly reference lists and generate a clean literature manifest for manual downloading or later curation. Use when the task is to parse a references section, normalize citations, recover fields like title/year/author/DOI, enrich entries with Crossref or OpenAlex hints, expose candidate article URLs that can directly open the paper landing page, detect likely duplicates, compare against an existing local PDF folder, and write `ref_manifest.json` / `ref_manifest.md` / `ref_manifest.csv`.
 ---
 
 # Reference Manifest
 
-Use this skill when the useful output is a **structured worklist of papers**, not automatic downloading.
+Use this skill when the useful output is a **structured worklist of papers**.
 
 ## Core workflow
 
@@ -19,11 +19,11 @@ Use this skill when the useful output is a **structured worklist of papers**, no
 4. Review the outputs.
    - `ref_manifest.json` for downstream scripts.
    - `ref_manifest.md` for quick human audit.
-   - `ref_manifest.csv` for filtering, sorting, and manual download tracking.
-5. Check duplicate hints and local-file matches.
+   - `ref_manifest.csv` for filtering, sorting, and manual literature tracking.
+5. Check enrichment, duplicate hints, URL fields, and local-file matches.
    - The extractor emits likely duplicate groups.
-   - It can also compare entries against an existing local PDF folder and mark likely matches.
-6. Use the manifest for manual download, deduplication, or later annotation.
+   - It can compare entries against an existing local PDF folder.
+   - It also exposes article/landing-page URLs that can be opened directly in a browser.
 
 ## Output expectations
 
@@ -36,6 +36,7 @@ A good row should include, when recoverable:
 - title
 - doi
 - resolved_doi
+- article_url
 - crossref summary
 - openalex summary
 - oa_pdf_hint
@@ -58,5 +59,6 @@ Report only:
 - output paths
 - number of parsed references
 - whether DOI / OA enrichment succeeded or partially failed
+- whether article URLs were recovered
 - whether likely duplicates were detected
 - whether local PDF matching was performed

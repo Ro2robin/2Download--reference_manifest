@@ -11,30 +11,37 @@ Language / 言語 / 语言:
 - [English](README.en.md)
 - [日本語](README.ja.md)
 
-## What this repository is
+## What this repository does
 
-This repository packages a focused OpenClaw skill for one job:
+This repository packages a focused OpenClaw skill that turns a references list into a structured manifest.
 
-**turn a references list into a structured manifest**
-
-It is intentionally narrow and stable. It does **not** try to automate fragile publisher logins or browser-driven PDF downloading.
-
-![Workflow overview](assets/workflow-overview.png)
-
-## Why this exists
-
-In real literature work, the annoying part is often not “finding a downloader.”
-The annoying part is that references are messy, inconsistent, duplicated, and hard to track.
-
-This repository keeps only the reusable part that tends to stay stable:
+It can:
 - parse references
-- normalize citation metadata
+- extract author / year / title / DOI
 - enrich entries with Crossref / OpenAlex hints
+- expose `article_url` that can directly open the paper landing page
 - generate `ref_manifest.json`
 - generate `ref_manifest.md`
 - generate `ref_manifest.csv`
 - detect likely duplicates
 - optionally compare against an existing local PDF folder
+
+![Workflow overview](assets/workflow-overview.png)
+
+## Why `article_url` matters
+
+A manifest is much more useful when it contains not only metadata, but also a direct web entry point to the paper.
+
+This repository now emphasizes:
+- `article_url`
+- `crossref.url`
+
+These URLs can often be opened directly as:
+- DOI pages
+- article landing pages
+- journal/paper webpages
+
+That makes later manual downloading much easier.
 
 ## Feature overview
 
@@ -46,6 +53,7 @@ This repository keeps only the reusable part that tends to stay stable:
 | Unnumbered one-line parsing | ✅ | Basic support |
 | Broken multi-line reference merge | ✅ | Merges before parsing |
 | DOI extraction | ✅ | Direct DOI + resolved DOI |
+| Article URL extraction | ✅ | `article_url` field added |
 | Crossref enrichment | ✅ | Best-effort |
 | OpenAlex enrichment | ✅ | Best-effort |
 | JSON output | ✅ | Main machine-readable manifest |
@@ -53,7 +61,6 @@ This repository keeps only the reusable part that tends to stay stable:
 | CSV output | ✅ | Spreadsheet workflow |
 | Duplicate grouping | ✅ | Conservative heuristics |
 | Local PDF folder matching | ✅ | Filename heuristic |
-| Automatic PDF downloading | ❌ | Deliberately removed |
 
 ## Workflow
 
@@ -63,6 +70,8 @@ references.md / references.txt
 parse + normalize
         ↓
 Crossref / OpenAlex enrichment
+        ↓
+article_url selection
         ↓
 duplicate detection
         ↓
@@ -94,6 +103,7 @@ python scripts/normalize_reference.py "Lee, J. D., & See, K. A. (2004). Trust in
 - `ref_manifest.json` — structured machine-readable manifest
 - `ref_manifest.md` — quick audit summary
 - `ref_manifest.csv` — easy manual review in Excel / Sheets
+- `article_url` — direct article webpage / landing-page hint where available
 
 ![Sample output overview](assets/sample-output-overview.png)
 
@@ -140,7 +150,7 @@ See `examples/` for:
 ## Intended usage model
 
 This skill is best used as a **pre-download organizer**.
-You feed it a references section, and it gives you a manifest that makes later manual downloading much faster and cleaner.
+You feed it a references section, and it gives you a manifest with metadata, duplicate hints, and article URLs that make later manual literature work much faster.
 
 ## What still needs improvement
 
@@ -149,12 +159,11 @@ You feed it a references section, and it gives you a manifest that makes later m
 - smarter local PDF matching beyond filename heuristics
 - optional DOI-first verification mode
 - richer duplicate detection for near-duplicate titles
-- stronger spreadsheet workflow fields for large corpora
+- smarter ranking for `article_url` selection across Crossref / OpenAlex / DOI
 
 ## Maintenance notes
 
-This repository should stay focused.
-If future changes start pulling it back toward browser automation, publisher login handling, or brittle download state machines, that is probably a regression in scope.
+This repository should stay focused on reference parsing and manifest generation.
 
 ## License
 

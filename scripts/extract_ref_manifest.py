@@ -15,7 +15,7 @@ TIMEOUT = 25
 S = requests.Session()
 S.headers.update(
     {
-        "User-Agent": "OpenClaw-ref-manifest/1.3 (mailto:none)",
+        "User-Agent": "OpenClaw-ref-manifest/1.4 (mailto:none)",
         "Accept": "application/json, text/plain, */*",
     }
 )
@@ -169,9 +169,20 @@ def openalex_lookup(title: str, first_author: str, year: str) -> Optional[dict]:
         }
         cand = score_candidate(title, first_author, year, item2)
         cand["open_access"] = item.get("open_access", {})
+        cand["openalex_url"] = item.get("id", "")
         if best is None or cand["score"] > best["score"]:
             best = cand
     return best
+
+
+def pick_article_url(rec: dict) -> str:
+    if rec.get("crossref") and rec["crossref"].get("url"):
+        return rec["crossref"].get("url") or ""
+    if rec.get("openalex") and rec["openalex"].get("url"):
+        return rec["openalex"].get("url") or ""
+    if rec.get("resolved_doi"):
+        return f"https://doi.org/{rec['resolved_doi']}"
+    return ""
 
 
 def build_manifest(refs: list[dict], sleep_s: float = 0.6) -> list[dict]:
@@ -183,6 +194,7 @@ def build_manifest(refs: list[dict], sleep_s: float = 0.6) -> list[dict]:
         rec["crossref"] = None
         rec["openalex"] = None
         rec["resolved_doi"] = ref["doi"]
+        rec["article_url"] = f"https://doi.org/{ref['doi']}" if ref["doi"] else ""
         rec["needs_login_maybe"] = False
         rec["oa_pdf_hint"] = ""
         rec["duplicate_group"] = ""
@@ -207,6 +219,7 @@ def build_manifest(refs: list[dict], sleep_s: float = 0.6) -> list[dict]:
                     rec["oa_pdf_hint"] = oa["open_access"].get("oa_url") or ""
             except Exception as e:
                 rec["openalex_error"] = type(e).__name__
+        rec["article_url"] = pick_article_url(rec)
         if rec["resolved_doi"] and not rec["oa_pdf_hint"]:
             rec["needs_login_maybe"] = True
         rows.append(rec)
@@ -277,6 +290,7 @@ def write_csv(rows: list[dict], csv_path: Path) -> None:
         "year",
         "doi",
         "resolved_doi",
+        "article_url",
         "oa_pdf_hint",
         "needs_login_maybe",
         "duplicate_group",
@@ -304,16 +318,20 @@ def write_outputs(rows: list[dict], out_dir: Path, json_name: str, md_name: str,
     lines = ["# Reference manifest", ""]
     dup_count = len({r['duplicate_group'] for r in rows if r.get('duplicate_group')})
     local_count = sum(1 for r in rows if r.get('local_pdf'))
+    url_count = sum(1 for r in rows if r.get('article_url'))
     lines.append(f"- total_refs: {len(rows)}")
     lines.append(f"- duplicate_groups: {dup_count}")
     lines.append(f"- local_pdf_matches: {local_count}")
+    lines.append(f"- article_urls: {url_count}")
     lines.append("")
     for r in rows:
         lines.append(f"- [{r['index']}] {r['title']}")
         lines.append(f"  - year: {r['year']} | first_author: {r['first_author']}")
         lines.append(f"  - doi: {r['doi'] or '(none)'} | resolved_doi: {r['resolved_doi'] or '(none)'}")
+        if r.get("article_url"):
+            lines.append(f"  - article_url: {r['article_url']}")
         if r.get("crossref"):
-            lines.append(f"  - crossref: score={r['crossref'].get('score')} | title={r['crossref'].get('title')} | container={r['crossref'].get('container')}")
+            lines.append(f"  - crossref: score={r['crossref'].get('score')} | title={r['crossref'].get('title')} | container={r['crossref'].get('container')} | url={r['crossref'].get('url')}")
         if r.get("oa_pdf_hint"):
             lines.append(f"  - oa_pdf_hint: {r['oa_pdf_hint']}")
         lines.append(f"  - needs_login_maybe: {r['needs_login_maybe']}")
@@ -352,7 +370,8 @@ def main() -> int:
         "manifest_md": str(md_path),
         "manifest_csv": str(csv_path),
         "duplicate_groups": len({r['duplicate_group'] for r in rows if r.get('duplicate_group')}),
-        "local_pdf_matches": sum(1 for r in rows if r.get('local_pdf'))
+        "local_pdf_matches": sum(1 for r in rows if r.get('local_pdf')),
+        "article_urls": sum(1 for r in rows if r.get('article_url'))
     }, ensure_ascii=False, indent=2))
     return 0
 

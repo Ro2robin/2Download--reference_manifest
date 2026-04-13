@@ -6,15 +6,11 @@
 
 **把参考文献列表整理成可继续手动下载和管理的 manifest。**
 
-它不再负责：
-- 登录出版社平台
-- 浏览器自动化下载 PDF
-- 处理复杂下载状态机
-
-它只保留真正稳定、好用、可自动化的部分：
+它现在主要能做这些事：
 - 解析参考文献
 - 提取作者、年份、标题、DOI
 - 补充 Crossref / OpenAlex 元数据线索
+- 给出可以直接打开文献网页的 `article_url`
 - 输出 `ref_manifest.json`
 - 输出 `ref_manifest.md`
 - 输出 `ref_manifest.csv`
@@ -52,15 +48,27 @@
 
 并补充：
 - `resolved_doi`
+- `article_url`
 - `oa_pdf_hint`
 - `needs_login_maybe`
 
-### 4. 自动提示重复文献
+### 4. URL 可以直接打开文献网页
+这是这个 skill 很关键的一点。
+
+输出里的：
+- `article_url`
+- `crossref.url`
+
+通常都可以直接作为**文献落地页 / DOI 页面 / 文章网页入口**来打开。
+
+也就是说，这个 skill 不只是帮你“抽元数据”，它还会尽量把**能点开的文章网页入口**给你整理出来，方便后续手动下载。
+
+### 5. 自动提示重复文献
 输出：
 - `duplicate_group`
 - `duplicate_reason`
 
-### 5. 支持本地 PDF 比对
+### 6. 支持本地 PDF 比对
 如果传入 `--local-pdf-dir`，会尝试根据：
 - DOI
 - 标题 token
@@ -72,7 +80,7 @@
 - `local_pdf`
 - `local_match_reason`
 
-### 6. 同时输出三种文件
+### 7. 同时输出三种文件
 - `ref_manifest.json`：适合脚本处理
 - `ref_manifest.md`：适合人工审查
 - `ref_manifest.csv`：适合 Excel / Sheets 手动筛选和下载管理
@@ -116,6 +124,16 @@ python scripts/normalize_reference.py "Lee, J. D., & See, K. A. (2004). Trust in
 - 排序筛选
 - 后续下载管理
 
+### `article_url`
+这是新增强调的关键字段。
+
+它通常可以直接打开：
+- DOI 页面
+- 文章 landing page
+- 文献网页入口
+
+如果你后面要手动下载文献，这个字段会非常省事。
+
 ---
 
 ## 这个 skill 适合什么场景
@@ -123,15 +141,13 @@ python scripts/normalize_reference.py "Lee, J. D., & See, K. A. (2004). Trust in
 最适合的场景是：
 
 1. 你已经有一份参考文献列表
-2. 你不想直接自动下载 PDF
-3. 你想先得到一个干净、结构化、可筛选的工作清单
+2. 你想先得到一个干净、结构化、可筛选的工作清单
+3. 你还希望顺手得到可打开的文献网页入口
 4. 然后再手动下载、归档或补全
 
 说白了，它是一个：
 
-**下载前整理器 / 文献清单生成器**
-
-而不是一个万能下载器。
+**下载前整理器 / 文献清单生成器 / 网页入口整理器**
 
 ---
 
@@ -143,47 +159,4 @@ python scripts/normalize_reference.py "Lee, J. D., & See, K. A. (2004). Trust in
 2. 中英文混排、日文混排参考文献的解析仍可继续加强
 3. 本地 PDF 比对目前主要依赖文件名启发式，后续可加入更稳的元数据校验
 4. 重复检测目前偏保守，后续可以加近似标题匹配
-5. 还可以补一个更适合人工下载管理的状态模板
-
----
-
-## 仓库结构
-
-```text
-2Download--reference_manifest/
-├── SKILL.md
-├── LICENSE
-├── README.md
-├── README.zh-CN.md
-├── README.en.md
-├── README.ja.md
-├── examples/
-│   ├── README.md
-│   ├── sample_references.md
-│   └── sample_ref_manifest.csv
-└── scripts/
-    ├── normalize_reference.py
-    └── extract_ref_manifest.py
-```
-
----
-
-## License
-
-MIT
-
----
-
-## 示例文件
-
-仓库中的 `examples/` 目录已经提供：
-- 一个最小参考文献输入示例
-- 一个最小 CSV 输出示例
-
----
-
-## 一句话总结
-
-这个 skill 的价值不在“帮你自动下载所有 PDF”，而在于：
-
-**先把混乱的参考文献列表，整理成一个可操作、可追踪、可继续手动下载的 manifest。**
+5. `article_url` 目前优先取 Crossref / OpenAlex / DOI，可继续提升排序策略

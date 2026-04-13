@@ -6,15 +6,11 @@ This repository contains a narrowed-down OpenClaw skill with one clear purpose:
 
 **turn a references list into a structured manifest for later manual downloading and curation.**
 
-It no longer tries to:
-- log into publisher websites
-- automate browser-based PDF downloading
-- maintain a fragile download state machine
-
-It keeps only the stable and useful part:
+Its current capabilities are:
 - parse references
 - extract author / year / title / DOI
 - enrich metadata with Crossref / OpenAlex hints
+- expose `article_url` that can directly open the paper landing page
 - write `ref_manifest.json`
 - write `ref_manifest.md`
 - write `ref_manifest.csv`
@@ -52,15 +48,30 @@ It queries:
 
 And can add:
 - `resolved_doi`
+- `article_url`
 - `oa_pdf_hint`
 - `needs_login_maybe`
 
-### 4. Detect likely duplicates
+### 4. URL is a key output
+This is an important point.
+
+The manifest tries to expose:
+- `article_url`
+- `crossref.url`
+
+These fields can often be opened directly as:
+- DOI page
+- article landing page
+- journal/paper webpage
+
+So the skill does not only extract metadata. It also tries to give you a **clickable web entry point to the paper**.
+
+### 5. Detect likely duplicates
 It outputs:
 - `duplicate_group`
 - `duplicate_reason`
 
-### 5. Compare with local PDFs
+### 6. Compare with local PDFs
 If `--local-pdf-dir` is provided, it tries to match local files using:
 - DOI
 - title tokens
@@ -72,7 +83,7 @@ And adds:
 - `local_pdf`
 - `local_match_reason`
 
-### 6. Generate three outputs
+### 7. Generate three outputs
 - `ref_manifest.json` — machine-friendly
 - `ref_manifest.md` — human audit summary
 - `ref_manifest.csv` — spreadsheet-friendly worklist
@@ -112,21 +123,29 @@ Best for quick manual review.
 ### `ref_manifest.csv`
 Best for Excel / Sheets workflows, filtering, sorting, and manual download tracking.
 
+### `article_url`
+This is now emphasized as a first-class field.
+
+It often points to:
+- a DOI page
+- an article landing page
+- a paper webpage that can be opened directly in a browser
+
+That makes later manual downloading much easier.
+
 ---
 
 ## Best use case
 
 This skill is best used when:
 1. you already have a references section
-2. you do not want brittle automated downloading
-3. you want a clean, structured worklist first
+2. you want a clean, structured worklist first
+3. you also want direct article web entry points where possible
 4. you will then manually download, review, or archive papers
 
 In plain terms, this is a:
 
-**pre-download organizer / reference-manifest generator**
-
-not an all-purpose downloader.
+**pre-download organizer / reference-manifest generator / article-entry-point extractor**
 
 ---
 
@@ -137,46 +156,4 @@ Current improvement areas:
 2. stronger parsing for mixed Chinese / English / Japanese references
 3. more reliable local PDF matching beyond filename heuristics
 4. richer near-duplicate detection
-5. optional DOI-first validation mode
-6. stronger manual workflow fields for larger corpora
-
----
-
-## Repository structure
-
-```text
-2Download--reference_manifest/
-├── SKILL.md
-├── LICENSE
-├── README.md
-├── README.zh-CN.md
-├── README.en.md
-├── README.ja.md
-├── examples/
-│   ├── README.md
-│   ├── sample_references.md
-│   └── sample_ref_manifest.csv
-└── scripts/
-    ├── normalize_reference.py
-    └── extract_ref_manifest.py
-```
-
-## License
-
-MIT
-
-## Examples
-
-The `examples/` directory now includes:
-- a minimal input references file
-- a minimal CSV output example
-
----
-
-## One-line summary
-
-The value of this skill is not “download every PDF automatically.”
-
-Its value is:
-
-**turn a messy references list into an actionable, traceable manifest for manual literature work.**
+5. smarter ranking for `article_url` selection across Crossref / OpenAlex / DOI
