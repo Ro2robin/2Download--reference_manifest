@@ -36,7 +36,8 @@ A good row should include, when recoverable:
 - title
 - doi
 - resolved_doi
-- article_url
+- article_url — 文章网页入口 / article landing-page URL
+- pdf_url_hint — PDF 链接线索 / PDF-oriented URL hint
 - crossref summary
 - openalex summary
 - oa_pdf_hint

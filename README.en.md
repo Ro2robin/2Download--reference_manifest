@@ -24,8 +24,10 @@ Its current capabilities are:
 
 These are now two separate URL-style outputs:
 
-- `article_url` — best-effort article webpage / DOI page / landing page
-- `pdf_url_hint` — best-effort PDF-oriented hint, usually closer to a direct PDF route
+- `article_url` — best-effort article webpage / DOI page / landing page  
+  中文注释：**文章网页入口**
+- `pdf_url_hint` — best-effort PDF-oriented hint, usually closer to a direct PDF route  
+  中文注释：**PDF 链接线索**
 
 In practice:
 - use `article_url` when you want to open the paper webpage first

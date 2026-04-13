@@ -100,8 +100,12 @@ python scripts/normalize_reference.py "Lee, J. D., & See, K. A. (2004). Trust in
 - `ref_manifest.json` — structured machine-readable manifest
 - `ref_manifest.md` — quick audit summary
 - `ref_manifest.csv` — easy manual review in Excel / Sheets
-- `article_url` — direct article webpage / landing-page hint where available
-- `pdf_url_hint` — best-effort PDF-oriented URL hint where available
+- `article_url` — 文章网页入口 / direct article webpage or landing-page hint
+- `pdf_url_hint` — PDF 链接线索 / best-effort PDF-oriented URL hint
+
+Field notes / 字段注释:
+- `article_url`: open the article page first / 先打开文章网页入口
+- `pdf_url_hint`: try this when looking for the PDF / 找 PDF 时优先参考这个链接线索
 
 ![Sample output overview](assets/sample-output-overview.png)
 

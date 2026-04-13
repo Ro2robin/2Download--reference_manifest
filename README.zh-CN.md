@@ -24,8 +24,10 @@
 
 这是现在这个 skill 里最重要的两个 URL 字段：
 
-- `article_url`：优先给你**文章网页 / DOI 页面 / landing page**
-- `pdf_url_hint`：优先给你**更像 PDF 入口的链接线索**
+- `article_url`：优先给你**文章网页 / DOI 页面 / landing page**  
+  English note: **article landing-page URL**
+- `pdf_url_hint`：优先给你**更像 PDF 入口的链接线索**  
+  English note: **PDF-oriented URL hint**
 
 简单说：
 - `article_url` 适合先点开看文献网页
