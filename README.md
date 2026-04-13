@@ -1,8 +1,10 @@
 # 2Download--reference_manifest
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
-[![Skill](https://img.shields.io/badge/OpenClaw-Skill-blue)](./SKILL.md)
-[![Language](https://img.shields.io/badge/Docs-zh--CN%20%7C%20en%20%7C%20ja-orange)](./README.zh-CN.md)
+[![OpenClaw Skill](https://img.shields.io/badge/OpenClaw-Skill-blue)](./SKILL.md)
+[![CI](https://img.shields.io/github/actions/workflow/status/Ro2robin/2Download--reference_manifest/ci.yml?branch=main&label=CI)](https://github.com/Ro2robin/2Download--reference_manifest/actions)
+[![Release](https://img.shields.io/github/v/release/Ro2robin/2Download--reference_manifest)](https://github.com/Ro2robin/2Download--reference_manifest/releases)
+[![Docs](https://img.shields.io/badge/Docs-zh--CN%20%7C%20en%20%7C%20ja-orange)](./README.zh-CN.md)
 
 Language / 言語 / 语言:
 - [中文说明](README.zh-CN.md)
@@ -15,10 +17,16 @@ This repository packages a focused OpenClaw skill for one job:
 
 **turn a references list into a structured manifest**
 
-It is intentionally narrow and stable.
-It does **not** try to automate fragile publisher logins or browser-driven PDF downloading.
-It keeps only the part that is genuinely reusable:
+It is intentionally narrow and stable. It does **not** try to automate fragile publisher logins or browser-driven PDF downloading.
 
+![Workflow overview](assets/workflow-overview.png)
+
+## Why this exists
+
+In real literature work, the annoying part is often not “finding a downloader.”
+The annoying part is that references are messy, inconsistent, duplicated, and hard to track.
+
+This repository keeps only the reusable part that tends to stay stable:
 - parse references
 - normalize citation metadata
 - enrich entries with Crossref / OpenAlex hints
@@ -29,6 +37,8 @@ It keeps only the part that is genuinely reusable:
 - optionally compare against an existing local PDF folder
 
 ## Feature overview
+
+![Feature overview](assets/feature-overview.png)
 
 | Feature | Status | Notes |
 |---|---|---|
@@ -85,16 +95,19 @@ python scripts/normalize_reference.py "Lee, J. D., & See, K. A. (2004). Trust in
 - `ref_manifest.md` — quick audit summary
 - `ref_manifest.csv` — easy manual review in Excel / Sheets
 
+![Sample output overview](assets/sample-output-overview.png)
+
 ## Repository structure
 
 ```text
 2Download--reference_manifest/
-├── SKILL.md
-├── LICENSE
-├── README.md
-├── README.zh-CN.md
-├── README.en.md
-├── README.ja.md
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── assets/
+│   ├── feature-overview.png
+│   ├── sample-output-overview.png
+│   └── workflow-overview.png
 ├── examples/
 │   ├── README.md
 │   ├── sample_references.md
@@ -102,9 +115,17 @@ python scripts/normalize_reference.py "Lee, J. D., & See, K. A. (2004). Trust in
 │   ├── sample_ref_manifest.md
 │   ├── sample_ref_manifest.csv
 │   └── sample_run.sh
-└── scripts/
-    ├── normalize_reference.py
-    └── extract_ref_manifest.py
+├── scripts/
+│   ├── normalize_reference.py
+│   └── extract_ref_manifest.py
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── LICENSE
+├── README.md
+├── README.zh-CN.md
+├── README.en.md
+├── README.ja.md
+└── SKILL.md
 ```
 
 ## Examples
@@ -129,6 +150,11 @@ You feed it a references section, and it gives you a manifest that makes later m
 - optional DOI-first verification mode
 - richer duplicate detection for near-duplicate titles
 - stronger spreadsheet workflow fields for large corpora
+
+## Maintenance notes
+
+This repository should stay focused.
+If future changes start pulling it back toward browser automation, publisher login handling, or brittle download state machines, that is probably a regression in scope.
 
 ## License
 
