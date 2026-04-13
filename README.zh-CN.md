@@ -152,14 +152,33 @@ python scripts/normalize_reference.py "Lee, J. D., & See, K. A. (2004). Trust in
 ```text
 2Download--reference_manifest/
 ├── SKILL.md
+├── LICENSE
 ├── README.md
 ├── README.zh-CN.md
 ├── README.en.md
 ├── README.ja.md
+├── examples/
+│   ├── README.md
+│   ├── sample_references.md
+│   └── sample_ref_manifest.csv
 └── scripts/
     ├── normalize_reference.py
     └── extract_ref_manifest.py
 ```
+
+---
+
+## License
+
+MIT
+
+---
+
+## 示例文件
+
+仓库中的 `examples/` 目录已经提供：
+- 一个最小参考文献输入示例
+- 一个最小 CSV 输出示例
 
 ---
 

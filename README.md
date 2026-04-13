@@ -29,14 +29,27 @@ It focuses on the part that is stable and genuinely useful:
 ```text
 2Download--reference_manifest/
 ├── SKILL.md
+├── LICENSE
 ├── README.md
 ├── README.zh-CN.md
 ├── README.en.md
 ├── README.ja.md
+├── examples/
+│   ├── README.md
+│   ├── sample_references.md
+│   └── sample_ref_manifest.csv
 └── scripts/
     ├── normalize_reference.py
     └── extract_ref_manifest.py
 ```
+
+## License
+
+MIT
+
+## Examples
+
+See `examples/` for a minimal input file and a sample CSV output.
 
 ## Quick start
 
